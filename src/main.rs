@@ -35,6 +35,7 @@ use crate::{
     defs::MODULE_PATH,
     errors::Result,
     misc::cleanup,
+    utils::ksucalls::unmount,
 };
 
 fn main() -> Result<()> {
@@ -104,6 +105,7 @@ fn main() -> Result<()> {
     );
 
     cleanup(tempdir);
+    unmount()?;
 
     match result {
         Ok(()) => {

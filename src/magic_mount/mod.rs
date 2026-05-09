@@ -32,10 +32,7 @@ use crate::{
         node::{Node, NodeFileType},
         utils::{clone_symlink, collect_module_files, mount_mirror},
     },
-    utils::{
-        ensure_dir_exists,
-        ksucalls::{send_unmountable, unmount},
-    },
+    utils::{ensure_dir_exists, ksucalls::send_unmountable},
 };
 
 static MOUNTDED_FILES: AtomicU32 = AtomicU32::new(0);
@@ -333,7 +330,6 @@ where
         mount_change(&tmp_dir, MountPropagationFlags::PRIVATE).context("make tmp private")?;
 
         MagicMount::new(&root, Path::new("/"), tmp_dir.as_path(), false, umount).do_mount()?;
-        unmount()?;
     } else {
         log::info!("no modules to mount, skipping!");
     }
