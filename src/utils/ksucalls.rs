@@ -17,6 +17,12 @@ static LIST: LazyLock<Mutex<TryUmount>> = LazyLock::new(|| Mutex::new(TryUmount:
 pub fn check_ksu() {
     let status = ksu::version().is_some_and(|v| {
         log::info!("KernelSU Version: {v}");
+        if v.to_string().starts_with('4') {
+            log::warn!(
+                "The ioctl function of SukiSU-Ultra has been broken, and umount is now disabled."
+            );
+            FLAG.store(true, std::sync::atomic::Ordering::Relaxed);
+        }
         true
     });
 
