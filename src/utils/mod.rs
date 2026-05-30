@@ -85,7 +85,7 @@ where
     }
 }
 
-fn legacy_update_desc<S: ToString>(desc: S) -> Result<()> {
+fn legacy_update_desc(desc: &String) -> Result<()> {
     let prop = fs::read_to_string(defs::MODULE_PROP)?;
     let mut temp = tempfile::Builder::new().tempfile()?;
 
@@ -93,7 +93,7 @@ fn legacy_update_desc<S: ToString>(desc: S) -> Result<()> {
         .lines()
         .map(|l| {
             if l.starts_with("description") {
-                format!("description={}", desc.to_string())
+                format!("description={desc}")
             } else {
                 l.to_string()
             }
