@@ -326,6 +326,7 @@ fn generate_key() -> Result<(CString, CString)> {
 
     Ok((priv_key, pub_key))
 }
+
 fn generate_sign(key: CString) -> Result<()> {
     #[cfg(target_arch = "x86_64")]
     let lib = unsafe { Library::new("libs/x86_64/libchecker.so")? };
