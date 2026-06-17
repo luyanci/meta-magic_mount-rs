@@ -261,31 +261,44 @@ fn match_build(verbose: bool, target: Targets) -> Result<()> {
     build(verbose)?;
     match target {
         Targets::Arm64 => {
+            let arm64_v8a = bin_path.join("arm64-v8a").join("magic_mount_rs");
+
+            let _ = fs::create_dir_all(&arm64_v8a.parent().unwrap());
+
             file::copy(
                 aarch64_bin_path(),
-                bin_path.join("magic_mount_rs.aarch64"),
+                &arm64_v8a,
                 &file::CopyOptions::new().overwrite(true),
             )?;
-            fs::remove_dir_all(temp_dir.join("libs").join("arm"))?;
+            fs::remove_dir_all(temp_dir.join("libs").join("armeabi-v7a"))?;
         }
         Targets::Armv7 => {
+            let armeabi_v7a = bin_path.join("armeabi-v7a").join("magic_mount_rs");
+
+            let _ = fs::create_dir_all(&armeabi_v7a.parent().unwrap());
+
             file::copy(
                 armv7_bin_path(),
-                bin_path.join("magic_mount_rs.armv7"),
+                &armeabi_v7a,
                 &file::CopyOptions::new().overwrite(true),
             )?;
             fs::remove_dir_all(temp_dir.join("libs").join("arm64-v8a"))?;
         }
         Targets::Universal => {
-            file::copy(
-                armv7_bin_path(),
-                bin_path.join("magic_mount_rs.armv7"),
-                &file::CopyOptions::new().overwrite(true),
-            )?;
+            let arm64_v8a = bin_path.join("arm64-v8a").join("magic_mount_rs");
+            let armeabi_v7a = bin_path.join("armeabi-v7a").join("magic_mount_rs");
+
+            let _ = fs::create_dir_all(&arm64_v8a.parent().unwrap());
+            let _ = fs::create_dir_all(&armeabi_v7a.parent().unwrap());
 
             file::copy(
+                armv7_bin_path(),
+                &armeabi_v7a,
+                &file::CopyOptions::new().overwrite(true),
+            )?;
+            file::copy(
                 aarch64_bin_path(),
-                bin_path.join("magic_mount_rs.aarch64"),
+                &arm64_v8a,
                 &file::CopyOptions::new().overwrite(true),
             )?;
         }

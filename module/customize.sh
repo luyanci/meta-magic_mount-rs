@@ -26,11 +26,11 @@ ui_print "- Device platform: $ABI"
 case "$ABI" in
 arm64-v8a)
   ui_print "- Selected architecture: arm64-v8a"
-  ARCH_BINARY="magic_mount_rs.aarch64"
+  ARCH_BINARY="arm64-v8a/magic_mount_rs"
   ;;
 armeabi-v7a)
   ui_print "- Selected architecture: armeabi-v7a"
-  ARCH_BINARY="magic_mount_rs.armv7"
+  ARCH_BINARY="armeabi-v7a/magic_mount_rs"
   ;;
 *)
   abort "! Unsupported platform: $ABI"
