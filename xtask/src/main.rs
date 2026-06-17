@@ -50,7 +50,7 @@ struct Cli {
     command: Commands,
 }
 
-#[derive(Debug, ValueEnum, Clone)]
+#[derive(Debug, ValueEnum, Copy, Clone)]
 enum Targets {
     Arm64,
     Armv7,
@@ -195,7 +195,7 @@ fn update() -> Result<()> {
 }
 
 fn check(verbose: bool) -> Result<()> {
-    let mut cargo = cargo_ndk();
+    let mut cargo = cargo_ndk(Targets::Universal);
     cargo.args(["check", "-Z", "build-std", "-Z", "trim-paths"]);
     cargo.env("RUSTFLAGS", "-C default-linker-libraries");
 
@@ -219,7 +219,7 @@ fn clean() -> Result<()> {
 
 fn lint(fix: bool) -> Result<()> {
     let command_builder = |fix: bool| {
-        let mut command = cargo_ndk();
+        let mut command = cargo_ndk(Targets::Universal);
         command.arg("clippy");
         if fix {
             command.args(["--fix", "--allow-dirty", "--allow-staged", "--all"]);
@@ -258,7 +258,7 @@ fn match_build(verbose: bool, target: Targets) -> Result<()> {
     let _ = fs::remove_dir_all(&temp_dir);
     let _ = fs::create_dir_all(&temp_dir);
     let _ = fs::create_dir_all(&bin_path);
-    build(verbose)?;
+    build(verbose, target)?;
     match target {
         Targets::Arm64 => {
             let arm64_v8a = bin_path.join("arm64-v8a").join("magic_mount_rs");
@@ -324,12 +324,12 @@ fn match_build(verbose: bool, target: Targets) -> Result<()> {
     Ok(())
 }
 
-fn build(verbose: bool) -> Result<()> {
+fn build(verbose: bool, target: Targets) -> Result<()> {
     let temp_dir = temp_dir();
 
     build_webui()?;
 
-    let mut cargo = cargo_ndk();
+    let mut cargo = cargo_ndk(target);
     let args = vec![
         "build",
         "-Z",
@@ -424,20 +424,22 @@ fn armv7_bin_path() -> PathBuf {
         .join("magic_mount_rs")
 }
 
-fn cargo_ndk() -> Command {
+fn cargo_ndk(target: Targets) -> Command {
     let mut command = Command::new("cargo");
     command
-        .args([
-            "+nightly",
-            "ndk",
-            "--platform",
-            "26",
-            "-t",
-            "arm64-v8a",
-            "-t",
-            "armeabi-v7a",
-        ])
+        .args(["+nightly", "ndk", "--platform", "26"])
         .env("RUSTFLAGS", "-C default-linker-libraries");
+    match target {
+        Targets::Arm64 => {
+            command.args(["-t", "arm64-v8a"]);
+        }
+        Targets::Armv7 => {
+            command.args(["-t", "armeabi-v7a"]);
+        }
+        Targets::Universal => {
+            command.args(["-t", "arm64-v8a", "-t", "armeabi-v7a"]);
+        }
+    }
     command
 }
 
