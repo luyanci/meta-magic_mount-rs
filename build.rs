@@ -1,7 +1,7 @@
 // Copyright (C) 2026 meta-magic_mount-rs developers
 // SPDX-License-Identifier: Apache-2.0
 
-use std::{env, fs, io::Write, process::Command};
+use std::{fs, io::Write, process::Command};
 
 use anyhow::Result;
 use serde::Deserialize;
