@@ -13,24 +13,14 @@ fi
 VERSION=$(grep_prop version "${MODPATH}/module.prop")
 ui_print "- mmrs version ${VERSION}"
 
-ui_print "- Detecting device architecture..."
-
-ABI=$(getprop ro.product.cpu.abi)
-
-if [ -z "$ABI" ]; then
-  abort "! Failed to detect device architecture"
-fi
-
-ui_print "- Device platform: $ABI"
-
-case "$ABI" in
-arm64-v8a)
+case "$ARCH" in
+arm64)
   ui_print "- Selected architecture: arm64-v8a"
-  ARCH_BINARY="arm64-v8a/magic_mount_rs"
+  ARCH_BINARY="arm64-v8a"
   ;;
-armeabi-v7a)
+arm)
   ui_print "- Selected architecture: armeabi-v7a"
-  ARCH_BINARY="armeabi-v7a/magic_mount_rs"
+  ARCH_BINARY="armeabi-v7a"
   ;;
 *)
   abort "! Unsupported platform: $ABI"
@@ -38,8 +28,8 @@ armeabi-v7a)
 esac
 
 # Ensure the binary is executable
-chmod 755 "$MODPATH/bin/$ARCH_BINARY" || abort "! Failed to set permissions"
-ln -s "./bin/$ARCH_BINARY" "$MODPATH/meta-mm" || abort "! Failed to create symlink"
+chmod 755 "$MODPATH/bin/$ARCH_BINARY" -R || abort "! Failed to set permissions"
+ln -s "./bin/$ARCH_BINARY/magic_mount_rs" "$MODPATH/meta-mm" || abort "! Failed to create symlink"
 
 ui_print "- mmrs binary installed"
 
