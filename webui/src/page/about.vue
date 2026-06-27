@@ -37,42 +37,71 @@ API.getVersion().then((ver) => {
   version.value = ver;
 });
 
-axios
-  .get<Contributor[]>(
-    "https://api.github.com/repos/Tools-cx-app/meta-magic_mount-rs/contributors",
-  )
-  .then(function (response) {
-    console.info(response.data);
-    contributors.value = response.data.filter(function (contributor) {
-      return contributor.type === "User";
-    });
-    for (let i = 0; i < contributors.value.length; i++) {
-      axios
-        .get(contributors.value[i].url)
-        .then(function (response) {
-          if (response.data.bio === null) {
-            contributors.value[i].bio = t("info.noBio");
-          } else {
-            contributors.value[i].bio = response.data.bio;
-          }
-          if (response.data.name === null) {
-            contributors.value[i].name = contributors.value[i].login;
-          } else {
-            contributors.value[i].name = response.data.name;
-          }
-        })
-        .catch(function () {
-          contributors.value[i].bio = t("info.noBio");
-          contributors.value[i].name = contributors.value[i].login;
-        });
-    }
-  })
-  .catch(function (error) {
-    console.error(error);
-    contributors.value = [];
-  });
+const STORAGE_KEY = "mmrs_contributors";
 
-console.info(contributors.value);
+const cached = localStorage.getItem(STORAGE_KEY);
+if (cached) {
+  try {
+    const parsed = JSON.parse(cached);
+    if (parsed.timestamp && Date.now() - parsed.timestamp < 24 * 60 * 60 * 1000) {
+      contributors.value = parsed.data;
+    } else {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  } catch {
+    localStorage.removeItem(STORAGE_KEY);
+  }
+}
+
+if (!contributors.value.length) {
+  axios
+    .get<Contributor[]>(
+      "https://api.github.com/repos/Tools-cx-app/meta-magic_mount-rs/contributors",
+    )
+    .then(function (response) {
+      const userContributors = response.data.filter(function (contributor) {
+        return contributor.type === "User";
+      });
+      const detailPromises = userContributors.map(function (contributor) {
+        return axios
+          .get(contributor.url)
+          .then(function (detailResponse) {
+            return {
+              ...contributor,
+              bio: detailResponse.data.bio ?? null,
+              name: detailResponse.data.name ?? contributor.login,
+            };
+          })
+          .catch(function () {
+            return {
+              ...contributor,
+              bio: null,
+              name: contributor.login,
+            };
+          });
+      });
+      return Promise.all(detailPromises);
+    })
+    .then(function (result) {
+      contributors.value = result.map(item => ({
+        ...item,
+        bio: item.bio ?? null,
+      }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        timestamp: Date.now(),
+        data: result,
+      }));
+    })
+    .catch(function (error) {
+      console.error(error);
+      contributors.value = [];
+    });
+}
+
+function getDisplayBio(bio: string | null) {
+  return bio ?? t("info.noBio");
+};
+
 function open_github_repo() {
   API.openLink("https://github.com/Tools-cx-app/meta-magic_mount-rs");
 }
@@ -103,7 +132,7 @@ function open_github_repo() {
       >
         <MiuixBasicComponent
           :title="contributor.name"
-          :summary="contributor.bio"
+          :summary="getDisplayBio(contributor.bio)"
           :clickable="true"
           @click="API.openLink(contributor.html_url)"
         />
