@@ -16,9 +16,17 @@ declare module 'vue' {
     Label: typeof import('./src/components/Label.vue')['default']
     Logo: typeof import('./src/components/logo.vue')['default']
     RemoveableLabel: typeof import('./src/components/RemoveableLabel.vue')['default']
+    Searchbar: typeof import('./src/components/md3/searchbar.vue')['default']
     StatusCard: typeof import('./src/components/StatusCard.vue')['default']
     VarAppBar: typeof import('@varlet/ui')['_AppBarComponent']
     VarBottomNavigation: typeof import('@varlet/ui')['_BottomNavigationComponent']
     VarBottomNavigationItem: typeof import('@varlet/ui')['_BottomNavigationItemComponent']
+    VarButton: typeof import('@varlet/ui')['_ButtonComponent']
+    VarCard: typeof import('@varlet/ui')['_CardComponent']
+    VarCell: typeof import('@varlet/ui')['_CellComponent']
+    VarIcon: typeof import('@varlet/ui')['_IconComponent']
+    VarInput: typeof import('@varlet/ui')['_InputComponent']
+    VarSpace: typeof import('@varlet/ui')['_SpaceComponent']
+    VarText: typeof import('@varlet/ui')['_TextComponent']
   }
 }

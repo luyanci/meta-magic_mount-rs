@@ -55,10 +55,20 @@ const current_lang = ref(0);
 
 const styleOptions = ['Miuix', 'Material Design 3'];
 const styleslist = ['miuix','md3']
-const styleDropdownIndex = ref(uiStore.uiStyle === 'miuix' ? 0 : 1);
-const current_style = ref(styleslist.indexOf(uiStore.uiStyle));
+const styles = computed({
+  get: () => styleslist.indexOf(uiStore.uiStyle),
+  set: (val: number) => {
+    uiStore.setUiStyle(styleslist[val]);
+  }
+})
 
-getCurrentLangIndex().then((index) => (current_lang.value = index));
+const language_set = computed({
+  get: () => current_lang.value,
+  set: (val: number) => {
+    current_lang.value = val;
+    switchLocale(lang_code.value[val]);
+  }
+})
 
 const customMountDraft = ref<CustomMount>({ source: "", target: "" });
 const editingCustomMountIndex = ref<number | null>(null);
@@ -108,21 +118,6 @@ onMounted(async () => {
 
   await configStore.loadConfig();
 });
-
-async function handleChange(value: number) {
-  await switchLocale(lang_code.value[value]);
-  handleStyleChange(styleDropdownIndex.value);
-  // window.location.reload();
-}
-
-function handleStyleChange(value: number) {
-  const newStyle = value === 0 ? 'miuix' : 'md3';
-  styleDropdownIndex.value = value;
-  uiStore.setUiStyle(newStyle);
-  showSnackbar({
-    message: t("config.styleChanged"),
-  });
-}
 
 function handle_add_partition() {
   configStore.config.partitions.push(partition.value);
@@ -228,25 +223,14 @@ function saveCustomMountDialog() {
     <MiuixCard class="ex-card">
       <MiuixDropdownPreference
         :title="t('common.language')"
-        :summary="lang_code[lang_dropdown_index]"
-        v-model="lang_dropdown_index"
+        v-model="language_set"
         :items="display_list"
       />
       <MiuixDropdownPreference
         :title="t('config.uiStyle')"
-        :summary="styleOptions[styleDropdownIndex]"
         :items="styleOptions"
-        v-model="styleDropdownIndex"
+        v-model="styles"
       />
-      <div style="padding: 12px">
-        <MiuixButton
-          type="primary"
-          :disabled="lang_dropdown_index === current_lang && styleDropdownIndex === current_style"
-          @click="handleChange(lang_dropdown_index)"
-        >
-          {{ t("config.apply") }}
-        </MiuixButton>
-      </div>
     </MiuixCard>
 
     <MiuixSmallTitle :text="t('tabs.config')" />

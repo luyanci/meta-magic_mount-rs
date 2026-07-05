@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onBeforeUnmount, type Component } from "vue";
 import { useI18n } from "vue-i18n";
-import { StyleProvider, Themes } from "@varlet/ui";
+import { StyleProvider, Themes,Dialog } from "@varlet/ui";
+import { API } from "../lib/api";
 
 const { t } = useI18n();
 const icons = ["home", "cog", "menu", "information"];
@@ -52,12 +53,28 @@ function handleChange(value?) {
   emit("update:navindex", value);
   return
 }
+
+function reboot_request() {
+  Dialog({
+    title: t("common.rebootTitle"),
+    message: t("common.rebootConfirm"),
+    confirmButtonText: t("common.reboot"),
+    cancelButtonText: t("common.cancel"),
+    onConfirm: () => {
+      API.reboot()
+    },
+  })
+}
 </script>
 
 <template>
   <div class="md3-layout">
     <var-app-bar :title="t('common.appName')">
-        <!-- todo:add button -->
+        <template #right>
+            <var-button round text>
+                <var-icon name="power" @click="reboot_request"/>
+            </var-button>
+        </template>
     </var-app-bar>
 
     <main class="md3-layout__main">
