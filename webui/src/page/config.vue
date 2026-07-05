@@ -41,6 +41,7 @@ import IgnoredCard from "../components/IgnoredCard.vue";
 import { configStore } from "../lib/stores/configStore";
 import { DEFAULT_CONFIG } from "../lib/constants";
 import type { CustomMount } from "../lib/types";
+import { uiStore } from "../lib/stores/uiStore";
 
 const { t } = useI18n();
 
@@ -51,6 +52,11 @@ const partition = ref("");
 const ignorepath = ref("");
 
 const current_lang = ref(0);
+
+const styleOptions = ['Miuix', 'Material Design 3'];
+const styleslist = ['miuix','md3']
+const styleDropdownIndex = ref(uiStore.uiStyle === 'miuix' ? 0 : 1);
+const current_style = ref(styleslist.indexOf(uiStore.uiStyle));
 
 getCurrentLangIndex().then((index) => (current_lang.value = index));
 
@@ -105,7 +111,17 @@ onMounted(async () => {
 
 async function handleChange(value: number) {
   await switchLocale(lang_code.value[value]);
-  window.location.reload();
+  handleStyleChange(styleDropdownIndex.value);
+  // window.location.reload();
+}
+
+function handleStyleChange(value: number) {
+  const newStyle = value === 0 ? 'miuix' : 'md3';
+  styleDropdownIndex.value = value;
+  uiStore.setUiStyle(newStyle);
+  showSnackbar({
+    message: t("config.styleChanged"),
+  });
 }
 
 function handle_add_partition() {
@@ -216,10 +232,16 @@ function saveCustomMountDialog() {
         v-model="lang_dropdown_index"
         :items="display_list"
       />
+      <MiuixDropdownPreference
+        :title="t('config.uiStyle')"
+        :summary="styleOptions[styleDropdownIndex]"
+        :items="styleOptions"
+        v-model="styleDropdownIndex"
+      />
       <div style="padding: 12px">
         <MiuixButton
           type="primary"
-          :disabled="lang_dropdown_index === current_lang"
+          :disabled="lang_dropdown_index === current_lang && styleDropdownIndex === current_style"
           @click="handleChange(lang_dropdown_index)"
         >
           {{ t("config.apply") }}
