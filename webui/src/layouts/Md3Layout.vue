@@ -1,4 +1,6 @@
 <script setup lang="ts">
+
+import '@varlet/ui/es/style'
 import { ref, watch, onMounted, onBeforeUnmount, type Component } from "vue";
 import { useI18n } from "vue-i18n";
 import { StyleProvider, Themes,Dialog } from "@varlet/ui";
@@ -96,56 +98,24 @@ function reboot_request() {
   </div>
 </template>
 
-<style scoped>
+<style>
+body {
+  transition: background-color .25s, color .25s;
+  color: var(--color-text);
+  background-color: var(--color-body);
+  color-scheme: var(--color-scheme);
+}
+
 .md3-layout {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background: var(--m-color-surface);
-}
-
-.md3-layout__header {
-  padding: 16px;
-  padding-top: calc(16px + var(--top-inset));
-  border-bottom: 1px solid var(--m-color-outline-variant);
-}
-
-.md3-layout__header h1 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 500;
-  color: var(--m-color-on-surface);
+  background: var(--color-surface);
 }
 
 .md3-layout__main {
   flex: 1;
   overflow-y: auto;
-}
-
-.md3-layout__nav {
-  display: flex;
-  justify-content: space-around;
-  padding: 8px;
-  padding-bottom: calc(8px + var(--bottom-inset));
-  border-top: 1px solid var(--m-color-outline-variant);
-  background: var(--m-color-surface-container);
-}
-
-.md3-layout__nav button {
-  flex: 1;
-  padding: 8px 16px;
-  border: none;
-  background: transparent;
-  border-radius: 20px;
-  color: var(--m-color-on-surface-variant);
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.md3-layout__nav button.active {
-  background: var(--m-color-secondary-container);
-  color: var(--m-color-on-secondary-container);
 }
 
 .page-enter-active,

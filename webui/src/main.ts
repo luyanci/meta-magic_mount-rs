@@ -8,8 +8,7 @@ import Vconsole from 'vconsole'
 import Varlet from '@varlet/ui'
 import i18n, { initI18n } from "./locales";
 import "./style.css";
-import 'miuix-vue/style.css'
-import '@varlet/ui/es/style'
+
 import App from "./App.vue";
 import { uiStore } from "./lib/stores/uiStore";
 

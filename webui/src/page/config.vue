@@ -62,6 +62,7 @@ const styles = computed({
   }
 })
 
+getCurrentLangIndex().then((val) => current_lang.value = val)
 const language_set = computed({
   get: () => current_lang.value,
   set: (val: number) => {

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import 'miuix-vue/style.css'
 import { ref, watch, onMounted, onBeforeUnmount, type Component } from "vue";
 import { useI18n } from "vue-i18n";
 import {
@@ -140,7 +141,29 @@ onBeforeUnmount(() => {
   </MiuixDialog>
 </template>
 
-<style scoped>
+<style>
+:root {
+  --top-inset: var(--window-inset-top, 0px);
+  --bottom-inset: var(--window-inset-bottom, 0px);
+  font-family:
+    "MiSans VF",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .app {
   display: flex;
   flex-direction: column;
