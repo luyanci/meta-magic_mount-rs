@@ -65,4 +65,5 @@ export const uiStore = {
   setLang,
   setUiStyle,
   init,
+  fetchAvailableLanguages,
 };

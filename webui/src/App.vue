@@ -12,12 +12,14 @@ import modules from "./page/modules.vue";
 import about from "./page/about.vue";
 
 // md3page
+import md3status from "./md3page/status.vue";
+import md3config from "./md3page/config.vue";
 import md3modules from "./md3page/modules.vue"
 import md3about from "./md3page/about.vue"
 
 const { t } = useI18n();
 
-const md3_pages = [status,config,md3modules,md3about]
+const md3_pages = [md3status,md3config,md3modules,md3about]
 const miuix_pages = [status, config, modules, about];
 const pages = computed(() => uiStore.uiStyle === "md3" ? md3_pages : miuix_pages)
 const titles = computed(() =>  [

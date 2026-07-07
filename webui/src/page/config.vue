@@ -34,9 +34,9 @@ import {
   Link,
 } from "miuix-vue/icons";
 
-import RemoveableLabel from "../components/RemoveableLabel.vue";
-import BindCard from "../components/BindCard.vue";
-import IgnoredCard from "../components/IgnoredCard.vue";
+import RemoveableLabel from "../components/miuix/RemoveableLabel.vue";
+import BindCard from "../components/miuix/BindCard.vue";
+import IgnoredCard from "../components/miuix/IgnoredCard.vue";
 
 import { configStore } from "../lib/stores/configStore";
 import { DEFAULT_CONFIG } from "../lib/constants";
