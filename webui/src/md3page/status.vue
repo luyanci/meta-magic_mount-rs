@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { useI18n } from 'vue-i18n';
-import Skeleton from '../components/md3/Skeleton.vue';
-import BottomActions from '../components/md3/BottomActions.vue';
-import { ICONS } from '../lib/constants';
-import { configStore } from '../lib/stores/configStore';
-import { moduleStore } from '../lib/stores/moduleStore';
-import { sysStore } from '../lib/stores/sysStore';
-import { API } from '../lib/api';
+import { ref, computed, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
+import Skeleton from "../components/md3/Skeleton.vue";
+import BottomActions from "../components/md3/BottomActions.vue";
+import { ICONS } from "../lib/constants";
+import { configStore } from "../lib/stores/configStore";
+import { moduleStore } from "../lib/stores/moduleStore";
+import { sysStore } from "../lib/stores/sysStore";
+import { API } from "../lib/api";
 
 const { t } = useI18n();
 
@@ -123,9 +123,12 @@ onMounted(async () => {
         </div>
 
         <div v-if="!sysStore.loading" class="hero-content">
-          <span class="hero-greeting">{{ t('content.welcome') }}</span>
-          <span class="hero-value">{{ t('content.mmrs') }}</span>
-          <span v-if="sysStore.device.model && sysStore.device.model !== '-'" class="hero-subtitle">
+          <span class="hero-greeting">{{ t("content.welcome") }}</span>
+          <span class="hero-value">{{ t("content.mmrs") }}</span>
+          <span
+            v-if="sysStore.device.model && sysStore.device.model !== '-'"
+            class="hero-subtitle"
+          >
             {{ sysStore.device.model }}
           </span>
         </div>
@@ -140,7 +143,7 @@ onMounted(async () => {
         <div class="metric-card">
           <template v-if="moduleStatsReady">
             <span class="metric-value">{{ mountedCount }}</span>
-            <span class="metric-label">{{ t('status.moduleActive') }}</span>
+            <span class="metric-label">{{ t("status.moduleActive") }}</span>
           </template>
           <Skeleton v-else class="skeleton-metric" />
           <div class="metric-icon-bg">
@@ -152,8 +155,10 @@ onMounted(async () => {
 
         <div class="metric-card">
           <template v-if="!sysStore.loading">
-            <span class="metric-value">{{ configStore.config.mountsource }}</span>
-            <span class="metric-label">{{ t('config.mountSource') }}</span>
+            <span class="metric-value">
+              {{ configStore.config.mountsource }}
+            </span>
+            <span class="metric-label">{{ t("config.mountSource") }}</span>
           </template>
           <Skeleton v-else class="skeleton-metric" />
           <div class="metric-icon-bg">
@@ -165,20 +170,24 @@ onMounted(async () => {
       </div>
 
       <div class="info-card">
-        <div class="card-title">{{ t('status.sysInfoTitle') }}</div>
+        <div class="card-title">{{ t("status.sysInfoTitle") }}</div>
 
         <div class="info-row">
-          <span class="info-key">{{ t('status.kernelLabel') }}</span>
+          <span class="info-key">{{ t("status.kernelLabel") }}</span>
           <template v-if="!sysStore.loading">
-            <span class="info-val">{{ sysStore.systemInfo.kernel ?? '-' }}</span>
+            <span class="info-val">
+              {{ sysStore.systemInfo.kernel ?? "-" }}
+            </span>
           </template>
           <Skeleton v-else class="skeleton-info-wide" />
         </div>
 
         <div class="info-row">
-          <span class="info-key">{{ t('status.selinuxLabel') }}</span>
+          <span class="info-key">{{ t("status.selinuxLabel") }}</span>
           <template v-if="!sysStore.loading">
-            <span class="info-val">{{ sysStore.systemInfo.selinux ?? '-' }}</span>
+            <span class="info-val">
+              {{ sysStore.systemInfo.selinux ?? "-" }}
+            </span>
           </template>
           <Skeleton v-else class="skeleton-info-narrow" />
         </div>
@@ -187,31 +196,32 @@ onMounted(async () => {
 
     <BottomActions>
       <div class="spacer" />
-      <div class="action-row">
-        <button class="btn-icon" @click="showRebootConfirm = true">
-          <svg viewBox="0 0 24 24" width="24" height="24">
-            <path :d="ICONS.power" />
-          </svg>
-        </button>
-
-        <button class="btn-icon" @click="sysStore.loadStatus" :disabled="sysStore.loading">
-          <svg viewBox="0 0 24 24" width="24" height="24">
-            <path :d="ICONS.refresh" />
-          </svg>
-        </button>
-      </div>
+      <button
+        class="action-btn-icon"
+        @click="sysStore.loadStatus"
+        :disabled="sysStore.loading"
+        :title="t('status.refresh')"
+      >
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path :d="ICONS.refresh" />
+        </svg>
+      </button>
     </BottomActions>
 
-    <div v-if="showRebootConfirm" class="dialog-overlay" @click.self="showRebootConfirm = false">
+    <div
+      v-if="showRebootConfirm"
+      class="dialog-overlay"
+      @click.self="showRebootConfirm = false"
+    >
       <div class="dialog-content">
-        <div class="dialog-headline">{{ t('common.rebootTitle') }}</div>
-        <div class="dialog-body">{{ t('common.rebootConfirm') }}</div>
+        <div class="dialog-headline">{{ t("common.rebootTitle") }}</div>
+        <div class="dialog-body">{{ t("common.rebootConfirm") }}</div>
         <div class="dialog-actions">
           <button class="dialog-btn-text" @click="showRebootConfirm = false">
-            {{ t('common.cancel') }}
+            {{ t("common.cancel") }}
           </button>
           <button class="dialog-btn-text" @click="reboot">
-            {{ t('common.reboot') }}
+            {{ t("common.reboot") }}
           </button>
         </div>
       </div>
@@ -434,35 +444,29 @@ onMounted(async () => {
   gap: 8px;
 }
 
-.action-row {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
 .spacer {
   flex: 1;
 }
 
-.btn-icon {
-  width: 40px;
-  height: 40px;
+.action-btn-icon {
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: transparent;
-  color: var(--md-sys-color-on-surface-variant);
+  border: none;
+  background-color: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: none;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
-.btn-icon:hover {
-  background-color: rgba(128, 128, 128, 0.1);
+.action-btn-icon svg {
+  fill: currentColor;
 }
 
-.btn-icon:disabled {
+.action-btn-icon:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

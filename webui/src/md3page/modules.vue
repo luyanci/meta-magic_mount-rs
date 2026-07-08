@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { useI18n } from 'vue-i18n';
-import BottomActions from '../components/md3/BottomActions.vue';
-import Skeleton from '../components/md3/Skeleton.vue';
-import Searchbar from '../components/md3/searchbar.vue';
-import { ICONS } from '../lib/constants';
-import { moduleStore } from '../lib/stores/moduleStore';
+import { ref, computed } from "vue";
+import { useI18n } from "vue-i18n";
+import BottomActions from "../components/md3/BottomActions.vue";
+import Skeleton from "../components/md3/Skeleton.vue";
+import Searchbar from "../components/md3/searchbar.vue";
+import { ICONS } from "../lib/constants";
+import { moduleStore } from "../lib/stores/moduleStore";
 
 const { t } = useI18n();
 
-const searchQuery = ref('');
+const searchQuery = ref("");
 const expandedId = ref<string | null>(null);
 
 const filteredModules = computed(() =>
@@ -27,7 +27,7 @@ function toggleExpand(id: string) {
 }
 
 function getModeLabel(isMounted: boolean) {
-  return isMounted ? t('modules.modes.short.magic') : t('modules.modes.short.ignore');
+  return isMounted ? "MOUNTED" : "UNMOUNTED";
 }
 </script>
 
@@ -48,14 +48,21 @@ function getModeLabel(isMounted: boolean) {
             v-for="module in filteredModules"
             :key="module.id"
             class="module-card"
-            :class="{ expanded: expandedId === module.id, unmounted: !module.is_mounted }"
+            :class="{
+              expanded: expandedId === module.id,
+              unmounted: !module.is_mounted,
+            }"
           >
             <div
               class="module-header"
               @click="toggleExpand(module.id)"
               role="button"
               tabindex="0"
-              @keydown="(e) => (e.key === 'Enter' || e.key === ' ') && toggleExpand(module.id)"
+              @keydown="
+                (e) =>
+                  (e.key === 'Enter' || e.key === ' ') &&
+                  toggleExpand(module.id)
+              "
             >
               <div class="module-info">
                 <div class="module-name">{{ module.name }}</div>
@@ -66,7 +73,10 @@ function getModeLabel(isMounted: boolean) {
               </div>
               <div
                 class="mode-indicator"
-                :class="{ 'mode-mounted': module.is_mounted, 'mode-unmounted': !module.is_mounted }"
+                :class="{
+                  'mode-mounted': module.is_mounted,
+                  'mode-unmounted': !module.is_mounted,
+                }"
               >
                 {{ getModeLabel(module.is_mounted) }}
               </div>
@@ -76,16 +86,22 @@ function getModeLabel(isMounted: boolean) {
               <div class="module-body-inner">
                 <div class="module-body-content">
                   <div class="body-section">
-                    <div class="section-label">{{ t('modules.descriptionLabel') }}</div>
+                    <div class="section-label">
+                      {{ t("modules.descriptionLabel") }}
+                    </div>
                     <p class="module-desc">
-                      {{ module.description ?? t('modules.noDescriptionLabel') }}
+                      {{
+                        module.description ?? t("modules.noDescriptionLabel")
+                      }}
                     </p>
                   </div>
 
                   <div class="body-section">
-                    <div class="section-label">{{ t('modules.authorLabel') }}</div>
+                    <div class="section-label">
+                      {{ t("modules.authorLabel") }}
+                    </div>
                     <div class="module-author">
-                      {{ module.author ?? t('modules.unknownLabel') }}
+                      {{ module.author ?? t("modules.unknownLabel") }}
                     </div>
                   </div>
                 </div>
@@ -101,7 +117,13 @@ function getModeLabel(isMounted: boolean) {
                 <path :d="ICONS.modules" />
               </svg>
             </div>
-            <p>{{ moduleStore.modules.length === 0 ? t('modules.empty') : t('modules.emptyState') }}</p>
+            <p>
+              {{
+                moduleStore.modules.length === 0
+                  ? t("modules.empty")
+                  : t("modules.emptyState")
+              }}
+            </p>
           </div>
         </template>
       </template>
@@ -266,7 +288,9 @@ function getModeLabel(isMounted: boolean) {
   border-top: 1px solid var(--md-sys-color-outline-variant);
   opacity: 0;
   transform: translateY(-8px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
   transition-delay: 0s;
 }
 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onBeforeUnmount, type Component } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { API } from '../lib/api';
-import { ICONS } from '../lib/constants';
-import '../md3-theme.css';
+import { ref, watch, onMounted, onBeforeUnmount, type Component } from "vue";
+import { useI18n } from "vue-i18n";
+import { API } from "../lib/api";
+import { ICONS } from "../lib/constants";
+import "../md3-theme.css";
 
 const { t } = useI18n();
 
@@ -11,7 +11,7 @@ const isDark = ref(false);
 let mediaQuery: MediaQueryList | null = null;
 
 function applyTheme() {
-  document.documentElement.classList.toggle('dark', isDark.value);
+  document.documentElement.classList.toggle("dark", isDark.value);
 }
 
 function handleThemeChange(e: MediaQueryListEvent) {
@@ -19,16 +19,16 @@ function handleThemeChange(e: MediaQueryListEvent) {
 }
 
 onMounted(() => {
-  document.documentElement.classList.add('md3-active');
-  mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  document.documentElement.classList.add("md3-active");
+  mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
   isDark.value = mediaQuery.matches;
   applyTheme();
-  mediaQuery.addEventListener('change', handleThemeChange);
+  mediaQuery.addEventListener("change", handleThemeChange);
 });
 
 onBeforeUnmount(() => {
-  document.documentElement.classList.remove('md3-active');
-  mediaQuery?.removeEventListener('change', handleThemeChange);
+  document.documentElement.classList.remove("md3-active");
+  mediaQuery?.removeEventListener("change", handleThemeChange);
 });
 
 watch(isDark, () => {
@@ -42,19 +42,22 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:navindex', value: number): void;
+  (e: "update:navindex", value: number): void;
 }>();
 
 const localNavindex = ref(props.navindex);
 const showRebootConfirm = ref(false);
 
-watch(() => props.navindex, (val) => {
-  localNavindex.value = val;
-});
+watch(
+  () => props.navindex,
+  (val) => {
+    localNavindex.value = val;
+  },
+);
 
 function handleNavChange(index: number) {
   localNavindex.value = index;
-  emit('update:navindex', index);
+  emit("update:navindex", index);
 }
 
 function reboot() {
@@ -62,20 +65,26 @@ function reboot() {
   void API.reboot();
 }
 
-const navIcons = ['home', 'settings', 'modules', 'info'];
+const navIcons = ["home", "settings", "modules", "info"];
 </script>
 
 <template>
   <div class="md3-layout">
-    <header class="md3-layout__header">
-      <div class="header-content">
-        <span class="header-title">{{ t('common.appName') }}</span>
+    <header class="top-bar">
+      <div class="top-bar-content">
+        <h1 class="screen-title">{{ t("common.appName") }}</h1>
+        <div class="top-actions">
+          <button
+            class="top-action-btn"
+            @click="showRebootConfirm = true"
+            :title="t('common.reboot')"
+          >
+            <svg viewBox="0 0 24 24" width="24" height="24">
+              <path :d="ICONS.power" />
+            </svg>
+          </button>
+        </div>
       </div>
-      <button class="header-action-btn" @click="showRebootConfirm = true">
-        <svg viewBox="0 0 24 24" width="24" height="24">
-          <path :d="ICONS.power" />
-        </svg>
-      </button>
     </header>
 
     <main class="md3-layout__main">
@@ -84,36 +93,44 @@ const navIcons = ['home', 'settings', 'modules', 'info'];
       </Transition>
     </main>
 
-    <nav class="md3-layout__nav">
+    <nav class="bottom-nav">
       <button
         v-for="(title, index) in titles"
         :key="index"
-        class="nav-item"
+        class="nav-tab"
         :class="{ active: localNavindex === index }"
         @click="handleNavChange(index)"
       >
-        <svg
-          class="nav-icon"
-          viewBox="0 0 24 24"
-          width="24"
-          height="24"
-        >
-          <path :d="ICONS[navIcons[index] as keyof typeof ICONS]" />
-        </svg>
-        <span class="nav-label">{{ title }}</span>
+        <div class="icon-container">
+          <svg viewBox="0 0 24 24" width="24" height="24">
+            <path
+              :d="
+                localNavindex === index
+                  ? ICONS[`${navIcons[index]}_filled` as keyof typeof ICONS] ||
+                    ICONS[navIcons[index] as keyof typeof ICONS]
+                  : ICONS[navIcons[index] as keyof typeof ICONS]
+              "
+            />
+          </svg>
+        </div>
+        <span class="label">{{ title }}</span>
       </button>
     </nav>
 
-    <div v-if="showRebootConfirm" class="dialog-overlay" @click.self="showRebootConfirm = false">
+    <div
+      v-if="showRebootConfirm"
+      class="dialog-overlay"
+      @click.self="showRebootConfirm = false"
+    >
       <div class="dialog-content">
-        <div class="dialog-headline">{{ t('common.rebootTitle') }}</div>
-        <div class="dialog-body">{{ t('common.rebootConfirm') }}</div>
+        <div class="dialog-headline">{{ t("common.rebootTitle") }}</div>
+        <div class="dialog-body">{{ t("common.rebootConfirm") }}</div>
         <div class="dialog-actions">
           <button class="dialog-btn-text" @click="showRebootConfirm = false">
-            {{ t('common.cancel') }}
+            {{ t("common.cancel") }}
           </button>
           <button class="dialog-btn-text" @click="reboot">
-            {{ t('common.reboot') }}
+            {{ t("common.reboot") }}
           </button>
         </div>
       </div>
@@ -122,6 +139,19 @@ const navIcons = ['home', 'settings', 'modules', 'info'];
 </template>
 
 <style scoped>
+:root {
+  --top-inset: var(--window-inset-top, 0px);
+  --bottom-inset: var(--window-inset-bottom, 0px);
+  background-color: var(--md-sys-color-background);
+  color: var(--md-sys-color-on-background);
+  font-family: var(--md-ref-typeface-plain);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
+}
+
 .md3-layout {
   display: flex;
   flex-direction: column;
@@ -129,28 +159,35 @@ const navIcons = ['home', 'settings', 'modules', 'info'];
   background-color: var(--md-sys-color-background);
 }
 
-.md3-layout__header {
+.top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: var(--md-sys-color-surface);
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  padding-top: var(--top-inset);
+}
+
+.top-bar-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
-  background-color: var(--md-sys-color-surface);
-  border-bottom: 1px solid var(--md-sys-color-outline-variant);
 }
 
-.header-content {
-  flex: 1;
-  display: flex;
-  align-items: center;
-}
-
-.header-title {
-  font-size: 18px;
+.screen-title {
+  font-size: 20px;
   font-weight: 500;
   color: var(--md-sys-color-on-surface);
+  margin: 0;
 }
 
-.header-action-btn {
+.top-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.top-action-btn {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -164,11 +201,11 @@ const navIcons = ['home', 'settings', 'modules', 'info'];
   transition: background-color 0.2s;
 }
 
-.header-action-btn svg {
+.top-action-btn svg {
   fill: currentColor;
 }
 
-.header-action-btn:hover {
+.top-action-btn:hover {
   background-color: var(--md-sys-color-surface-container-highest);
 }
 
@@ -176,23 +213,34 @@ const navIcons = ['home', 'settings', 'modules', 'info'];
   flex: 1;
   overflow-y: auto;
   padding: 16px;
-  padding-bottom: calc(16px + var(--bottom-nav-height, 64px) + var(--bottom-inset, 0px));
+  padding-bottom: calc(16px + 64px + var(--bottom-inset, 0px));
   max-width: 800px;
   margin: 0 auto;
   width: 100%;
   box-sizing: border-box;
 }
 
-.md3-layout__nav {
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 8px 0;
+  padding: 8px 0 calc(8px + var(--bottom-inset));
   background-color: var(--md-sys-color-surface);
   border-top: 1px solid var(--md-sys-color-outline-variant);
+  z-index: 90;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 
-.nav-item {
+.bottom-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-tab {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -201,34 +249,44 @@ const navIcons = ['home', 'settings', 'modules', 'info'];
   border: none;
   background-color: transparent;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 12px;
-}
-
-.nav-item:hover {
-  background-color: var(--md-sys-color-surface-container);
-}
-
-.nav-item.active {
-  color: var(--md-sys-color-primary);
-}
-
-.nav-item:not(.active) {
   color: var(--md-sys-color-on-surface-variant);
 }
 
-.nav-icon {
-  fill: currentColor;
-  transition: transform 0.2s;
+.nav-tab.active {
+  color: var(--md-sys-color-primary);
 }
 
-.nav-item.active .nav-icon {
+.icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.2s;
+  width: 40px;
+  height: 24px;
+  border-radius: 16px;
+}
+
+.nav-tab.active .icon-container {
   transform: scale(1.1);
+  background-color: var(--md-sys-color-primary-container);
 }
 
-.nav-label {
+.icon-container svg {
+  fill: currentColor;
+}
+
+.label {
   font-size: 11px;
   font-weight: 500;
+  transition: font-weight 0.2s;
+}
+
+.nav-tab.active .label {
+  font-weight: 600;
 }
 
 .page-enter-active,

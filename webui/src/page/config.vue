@@ -53,23 +53,23 @@ const ignorepath = ref("");
 
 const current_lang = ref(0);
 
-const styleOptions = ['Miuix', 'Material Design 3'];
-const styleslist = ['miuix','md3']
+const styleOptions = ["MiuiX", "Material Design 3"];
+const styleslist = ["miuix", "md3"];
 const styles = computed({
   get: () => styleslist.indexOf(uiStore.uiStyle),
   set: (val: number) => {
     uiStore.setUiStyle(styleslist[val]);
-  }
-})
+  },
+});
 
-getCurrentLangIndex().then((val) => current_lang.value = val)
+getCurrentLangIndex().then((val) => (current_lang.value = val));
 const language_set = computed({
   get: () => current_lang.value,
   set: (val: number) => {
     current_lang.value = val;
     switchLocale(lang_code.value[val]);
-  }
-})
+  },
+});
 
 const customMountDraft = ref<CustomMount>({ source: "", target: "" });
 const editingCustomMountIndex = ref<number | null>(null);

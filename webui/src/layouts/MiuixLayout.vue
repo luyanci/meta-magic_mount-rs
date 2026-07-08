@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import 'miuix-vue/style.css'
+import "miuix-vue/style.css";
 import { ref, watch, onMounted, onBeforeUnmount, type Component } from "vue";
 import { useI18n } from "vue-i18n";
 import {
@@ -92,7 +92,11 @@ onBeforeUnmount(() => {
 <template>
   <div class="app">
     <MiuixScrollArea ref="scrollerRef" class="app__body">
-      <MiuixTopAppBar :large="false" :title="t('common.appName')" class="app__top-app-bar">
+      <MiuixTopAppBar
+        :large="false"
+        :title="t('common.appName')"
+        class="app__top-app-bar"
+      >
         <template #actions>
           <MiuixIconButton aria-label="Reboot" @click="rebootreq_click = true">
             <MiuixIcon :icon="Close2" :size="24" />

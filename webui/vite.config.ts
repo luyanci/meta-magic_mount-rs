@@ -11,8 +11,7 @@ export default defineConfig({
   build: {
     outDir: "../module/webroot",
     target: "esnext",
+    chunkSizeWarningLimit: 1000
   },
-  plugins: [
-    vue(),
-  ],
+  plugins: [vue()],
 });

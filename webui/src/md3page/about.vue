@@ -1,18 +1,17 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import { useI18n } from 'vue-i18n';
-import Skeleton from '../components/md3/Skeleton.vue';
-import MagicLogo from '../components/md3/logo.vue'
-import { ICONS } from '../lib/constants';
-import { sysStore } from '../lib/stores/sysStore';
-import { API } from '../lib/api';
-
+import { ref, onMounted, onUnmounted } from "vue";
+import { useI18n } from "vue-i18n";
+import Skeleton from "../components/md3/Skeleton.vue";
+import MagicLogo from "../components/md3/logo.vue";
+import { ICONS } from "../lib/constants";
+import { sysStore } from "../lib/stores/sysStore";
+import { API } from "../lib/api";
 
 const { t } = useI18n();
 
-const REPO_OWNER = 'Tools-cx-app';
-const REPO_NAME = 'meta-magic_mount-rs';
-const CACHE_KEY = 'mmrs_contributors';
+const REPO_OWNER = "Tools-cx-app";
+const REPO_NAME = "meta-magic_mount-rs";
+const CACHE_KEY = "mmrs_contributors";
 const CACHE_DURATION = 1000 * 60 * 60;
 const DETAIL_FETCH_LIMIT = 12;
 
@@ -67,13 +66,13 @@ async function fetchContributors() {
     );
 
     if (!response.ok) {
-      throw new Error('Failed to fetch contributors');
+      throw new Error("Failed to fetch contributors");
     }
 
     const basicList = (await response.json()) as Contributor[];
     const filteredList = basicList.filter((user) => {
-      const isBotType = user.type === 'Bot';
-      const hasBotName = user.login.toLowerCase().includes('bot');
+      const isBotType = user.type === "Bot";
+      const hasBotName = user.login.toLowerCase().includes("bot");
       return !isBotType && !hasBotName;
     });
 
@@ -99,7 +98,7 @@ async function fetchContributors() {
     );
 
     for (const [index, result] of detailResults.entries()) {
-      if (result.status === 'fulfilled') {
+      if (result.status === "fulfilled") {
         enriched[index] = result.value;
       }
     }
@@ -113,7 +112,7 @@ async function fetchContributors() {
       }),
     );
   } catch (err) {
-    if ((err as Error).name !== 'AbortError') {
+    if ((err as Error).name !== "AbortError") {
       error.value = true;
     }
   } finally {
@@ -133,24 +132,27 @@ function handleLink(event: MouseEvent, url: string) {
       <div class="app-logo">
         <MagicLogo />
       </div>
-      <span class="app-name">{{ t('common.appName') }}</span>
+      <span class="app-name">{{ t("common.appName") }}</span>
       <span class="app-version">{{ sysStore.version }}</span>
     </div>
 
     <div class="action-buttons">
       <button
         class="action-btn action-btn-wide"
-        @click="(event: MouseEvent) => handleLink(event, `https://github.com/${REPO_OWNER}/${REPO_NAME}`)"
+        @click="
+          (event: MouseEvent) =>
+            handleLink(event, `https://github.com/${REPO_OWNER}/${REPO_NAME}`)
+        "
       >
         <svg class="btn-icon" viewBox="0 0 24 24" width="20" height="20">
           <path :d="ICONS.github" />
         </svg>
-        <span>{{ t('info.projectLink') }}</span>
+        <span>{{ t("info.projectLink") }}</span>
       </button>
     </div>
 
     <div class="contributors-section">
-      <div class="section-title">{{ t('info.contributors') }}</div>
+      <div class="section-title">{{ t("info.contributors") }}</div>
 
       <div class="list-wrapper">
         <template v-if="loading">
@@ -179,15 +181,19 @@ function handleLink(event: MouseEvent, url: string) {
                   loading="lazy"
                 />
                 <div class="contributor-info">
-                  <div class="contributor-name">{{ user.name ?? user.login }}</div>
-                  <div class="contributor-bio">{{ user.bio ?? t('info.noBio') }}</div>
+                  <div class="contributor-name">
+                    {{ user.name ?? user.login }}
+                  </div>
+                  <div class="contributor-bio">
+                    {{ user.bio ?? t("info.noBio") }}
+                  </div>
                 </div>
               </div>
             </div>
           </template>
 
           <template v-else>
-            <div class="error-message">{{ t('info.loadFail') }}</div>
+            <div class="error-message">{{ t("info.loadFail") }}</div>
           </template>
         </template>
       </div>

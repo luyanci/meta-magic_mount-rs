@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue';
-import { useI18n } from 'vue-i18n';
-import BottomActions from '../components/md3/BottomActions.vue';
-import ChipInput from '../components/md3/ChipInput.vue';
-import { ICONS } from '../lib/constants';
-import { configStore } from '../lib/stores/configStore';
-import { uiStore } from '../lib/stores/uiStore';
-import type { AppConfig, CustomMount } from '../lib/types';
+import { ref, computed, watch, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
+import BottomActions from "../components/md3/BottomActions.vue";
+import ChipInput from "../components/md3/ChipInput.vue";
+import { ICONS } from "../lib/constants";
+import { configStore } from "../lib/stores/configStore";
+import { uiStore } from "../lib/stores/uiStore";
+import type { AppConfig, CustomMount } from "../lib/types";
 
 const { t } = useI18n();
 
 const currentLocale = ref(uiStore.lang);
-const currentUiStyle = ref<'miuix' | 'md3'>(uiStore.uiStyle);
+const currentUiStyle = ref<"miuix" | "md3">(uiStore.uiStyle);
 
-const initialConfigStr = ref('');
-const customMountDraft = ref<CustomMount>({ source: '', target: '' });
+const initialConfigStr = ref("");
+const customMountDraft = ref<CustomMount>({ source: "", target: "" });
 const editingCustomMountIndex = ref<number | null>(null);
 const showCustomMountDialog = ref(false);
 
@@ -56,18 +56,14 @@ function reload() {
 
 function toggleBool(key: keyof AppConfig) {
   const currentValue = configStore.config[key];
-  if (typeof currentValue === 'boolean') {
+  if (typeof currentValue === "boolean") {
     updateConfig(key, !currentValue as AppConfig[typeof key]);
   }
 }
 
-function updateCustomMountDraft(key: keyof CustomMount, value: string) {
-  customMountDraft.value = { ...customMountDraft.value, [key]: value };
-}
-
 function openAddCustomMountDialog() {
   editingCustomMountIndex.value = null;
-  customMountDraft.value = { source: '', target: '' };
+  customMountDraft.value = { source: "", target: "" };
   showCustomMountDialog.value = true;
 }
 
@@ -90,10 +86,10 @@ function saveCustomMountDialog() {
   if (!draft.source || !draft.target) return;
 
   if (editingCustomMountIndex.value === null) {
-    updateConfig('customMounts', [...configStore.config.customMounts, draft]);
+    updateConfig("customMounts", [...configStore.config.customMounts, draft]);
   } else {
     updateConfig(
-      'customMounts',
+      "customMounts",
       configStore.config.customMounts.map((mount, index) =>
         index === editingCustomMountIndex.value ? draft : mount,
       ),
@@ -108,8 +104,10 @@ function deleteCustomMountDialog() {
   if (index === null) return;
 
   updateConfig(
-    'customMounts',
-    configStore.config.customMounts.filter((_, mountIndex) => mountIndex !== index),
+    "customMounts",
+    configStore.config.customMounts.filter(
+      (_, mountIndex) => mountIndex !== index,
+    ),
   );
   closeCustomMountDialog();
 }
@@ -120,25 +118,37 @@ async function changeLocale() {
 
 function changeUiStyle() {
   uiStore.setUiStyle(currentUiStyle.value);
-  uiStore.showToast(t('config.styleChanged'));
 }
 
 onMounted(() => {
   void uiStore.fetchAvailableLanguages();
+  void configStore.loadConfig().then(() => {
+    initialConfigStr.value = JSON.stringify(configStore.config);
+  });
 });
 </script>
 
 <template>
   <div class="md3-page config-container">
-    <div v-if="showCustomMountDialog" class="dialog-overlay" @click.self="closeCustomMountDialog">
+    <div
+      v-if="showCustomMountDialog"
+      class="dialog-overlay"
+      @click.self="closeCustomMountDialog"
+    >
       <div class="dialog-content">
         <div class="dialog-headline">
-          {{ editingCustomMountIndex === null ? t('config.customMountDialogAdd') : t('config.customMountDialogEdit') }}
+          {{
+            editingCustomMountIndex === null
+              ? t("config.customMountDialogAdd")
+              : t("config.customMountDialogEdit")
+          }}
         </div>
         <div class="custom-mount-dialog-content">
           <div class="custom-mount-dialog-fields">
             <div class="text-field-wrapper">
-              <label class="text-field-label">{{ t('config.customMountSource') }}</label>
+              <label class="text-field-label">
+                {{ t("config.customMountSource") }}
+              </label>
               <input
                 class="text-field-input"
                 :placeholder="'/data/adb/modules/test/bin/unit'"
@@ -146,7 +156,9 @@ onMounted(() => {
               />
             </div>
             <div class="text-field-wrapper">
-              <label class="text-field-label">{{ t('config.customMountTarget') }}</label>
+              <label class="text-field-label">
+                {{ t("config.customMountTarget") }}
+              </label>
               <input
                 class="text-field-input"
                 :placeholder="'/product/bin/unit'"
@@ -157,7 +169,11 @@ onMounted(() => {
         </div>
         <div class="dialog-actions">
           <template v-if="editingCustomMountIndex !== null">
-            <button class="dialog-btn-icon" @click="deleteCustomMountDialog" :title="t('config.removeCustomMount')">
+            <button
+              class="dialog-btn-icon"
+              @click="deleteCustomMountDialog"
+              :title="t('config.removeCustomMount')"
+            >
               <svg viewBox="0 0 24 24" width="24" height="24">
                 <path :d="ICONS.delete" />
               </svg>
@@ -165,10 +181,10 @@ onMounted(() => {
             <div class="spacer" />
           </template>
           <button class="dialog-btn-text" @click="closeCustomMountDialog">
-            {{ t('common.cancel') }}
+            {{ t("common.cancel") }}
           </button>
           <button class="dialog-btn-text" @click="saveCustomMountDialog">
-            {{ t('config.customMountDialogSave') }}
+            {{ t("config.customMountDialogSave") }}
           </button>
         </div>
       </div>
@@ -183,12 +199,12 @@ onMounted(() => {
             </svg>
           </div>
           <div class="card-text">
-            <span class="card-title">{{ t('common.language') }}</span>
+            <span class="card-title">{{ t("common.language") }}</span>
           </div>
         </div>
 
         <div class="text-field-wrapper">
-          <label class="text-field-label">{{ t('common.language') }}</label>
+          <label class="text-field-label">{{ t("common.language") }}</label>
           <select
             class="text-field-input"
             v-model="currentLocale"
@@ -210,12 +226,12 @@ onMounted(() => {
       <div class="config-card">
         <div class="card-header">
           <div class="card-icon">
-            <svg viewBox="0 0 24 24" width="24" height="24">
-              <path :d="ICONS.palette" />
+            <svg viewBox="0 -960 960 960" width="24" height="24">
+              <path :d="ICONS.paint" />
             </svg>
           </div>
           <div class="card-text">
-            <span class="card-title">{{ t('config.uiStyle') }}</span>
+            <span class="card-title">{{ t("config.uiStyle") }}</span>
           </div>
         </div>
 
@@ -223,33 +239,39 @@ onMounted(() => {
           <button
             class="option-tile clickable secondary"
             :class="{ active: currentUiStyle === 'miuix' }"
-            @click="currentUiStyle = 'miuix'; changeUiStyle()"
+            @click="
+              currentUiStyle = 'miuix';
+              changeUiStyle();
+            "
           >
             <div class="tile-top">
               <div class="tile-icon">
-                <svg viewBox="0 0 24 24" width="24" height="24">
+                <svg viewBox="0 0 1200 1200" width="24" height="24">
                   <path :d="ICONS.miuix" />
                 </svg>
               </div>
             </div>
             <div class="tile-bottom">
-              <span class="tile-label">MIUI</span>
+              <span class="tile-label">MiuiX</span>
             </div>
           </button>
           <button
             class="option-tile clickable secondary"
             :class="{ active: currentUiStyle === 'md3' }"
-            @click="currentUiStyle = 'md3'; changeUiStyle()"
+            @click="
+              currentUiStyle = 'md3';
+              changeUiStyle();
+            "
           >
             <div class="tile-top">
               <div class="tile-icon">
-                <svg viewBox="0 0 24 24" width="24" height="24">
+                <svg viewBox="0 -960 960 960" width="24" height="24">
                   <path :d="ICONS.android" />
                 </svg>
               </div>
             </div>
             <div class="tile-bottom">
-              <span class="tile-label">Material 3</span>
+              <span class="tile-label">Material Design 3</span>
             </div>
           </button>
         </div>
@@ -265,19 +287,27 @@ onMounted(() => {
             </svg>
           </div>
           <div class="card-text">
-            <span class="card-title">{{ t('config.mountSource') }}</span>
-            <span class="card-desc">{{ t('config.mountSourceDesc') }}</span>
+            <span class="card-title">{{ t("config.mountSource") }}</span>
+            <span class="card-desc">{{ t("config.mountSourceDesc") }}</span>
           </div>
         </div>
 
         <div class="input-stack">
           <div class="text-field-wrapper">
-            <label class="text-field-label">{{ t('config.mountSource') }}</label>
+            <label class="text-field-label">
+              {{ t("config.mountSource") }}
+            </label>
             <input
               class="text-field-input"
               placeholder="KSU"
               :value="configStore.config.mountsource"
-              @input="(e) => updateConfig('mountsource', (e.target as HTMLInputElement).value)"
+              @input="
+                (e) =>
+                  updateConfig(
+                    'mountsource',
+                    (e.target as HTMLInputElement).value,
+                  )
+              "
             />
           </div>
         </div>
@@ -293,8 +323,8 @@ onMounted(() => {
             </svg>
           </div>
           <div class="card-text">
-            <span class="card-title">{{ t('config.partitions') }}</span>
-            <span class="card-desc">{{ t('config.partitionsDesc') }}</span>
+            <span class="card-title">{{ t("config.partitions") }}</span>
+            <span class="card-desc">{{ t("config.partitionsDesc") }}</span>
           </div>
         </div>
 
@@ -315,8 +345,8 @@ onMounted(() => {
             </svg>
           </div>
           <div class="card-text">
-            <span class="card-title">{{ t('config.ignoreList') }}</span>
-            <span class="card-desc">{{ t('config.ignoreListDesc') }}</span>
+            <span class="card-title">{{ t("config.ignoreList") }}</span>
+            <span class="card-desc">{{ t("config.ignoreListDesc") }}</span>
           </div>
         </div>
 
@@ -337,8 +367,8 @@ onMounted(() => {
             </svg>
           </div>
           <div class="card-text">
-            <span class="card-title">{{ t('config.customMounts') }}</span>
-            <span class="card-desc">{{ t('config.customMountsDesc') }}</span>
+            <span class="card-title">{{ t("config.customMounts") }}</span>
+            <span class="card-desc">{{ t("config.customMountsDesc") }}</span>
           </div>
         </div>
 
@@ -350,11 +380,15 @@ onMounted(() => {
           >
             <div class="custom-mount-row-content">
               <div class="custom-mount-meta">
-                <span class="custom-mount-label">{{ t('config.customMountSource') }}</span>
+                <span class="custom-mount-label">
+                  {{ t("config.customMountSource") }}
+                </span>
                 <span class="custom-mount-value">{{ mount.source }}</span>
               </div>
               <div class="custom-mount-meta">
-                <span class="custom-mount-label">{{ t('config.customMountTarget') }}</span>
+                <span class="custom-mount-label">
+                  {{ t("config.customMountTarget") }}
+                </span>
                 <span class="custom-mount-value">{{ mount.target }}</span>
               </div>
             </div>
@@ -370,7 +404,11 @@ onMounted(() => {
           </div>
         </div>
 
-        <button class="add-custom-mount" @click="openAddCustomMountDialog" :title="t('config.addCustomMount')">
+        <button
+          class="add-custom-mount"
+          @click="openAddCustomMountDialog"
+          :title="t('config.addCustomMount')"
+        >
           <svg viewBox="0 0 24 24" width="20" height="20">
             <path :d="ICONS.add" />
           </svg>
@@ -393,9 +431,13 @@ onMounted(() => {
             </div>
           </div>
           <div class="tile-bottom">
-            <span class="tile-label">{{ t('config.umountLabel') }}</span>
+            <span class="tile-label">{{ t("config.umountLabel") }}</span>
             <span class="card-desc">
-              {{ configStore.config.umount ? t('config.umountOn') : t('config.umountOff') }}
+              {{
+                configStore.config.umount
+                  ? t("config.umountOn")
+                  : t("config.umountOff")
+              }}
             </span>
           </div>
         </button>
@@ -424,7 +466,9 @@ onMounted(() => {
         <svg viewBox="0 0 24 24" width="20" height="20">
           <path :d="ICONS.save" />
         </svg>
-        <span>{{ configStore.saving ? t('common.saving') : t('config.save') }}</span>
+        <span>
+          {{ configStore.saving ? t("common.saving") : t("config.save") }}
+        </span>
       </button>
     </BottomActions>
   </div>
@@ -536,7 +580,8 @@ onMounted(() => {
 }
 
 .text-field-input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0 100px var(--md-sys-color-surface-container-high) inset;
+  -webkit-box-shadow: 0 0 0 100px var(--md-sys-color-surface-container-high)
+    inset;
   -webkit-text-fill-color: var(--md-sys-color-on-surface);
 }
 
@@ -646,7 +691,9 @@ onMounted(() => {
   flex-direction: column;
   justify-content: space-between;
   gap: 12px;
-  transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1), transform 0.2s;
+  transition:
+    background-color 0.2s cubic-bezier(0.2, 0, 0, 1),
+    transform 0.2s;
   border: none;
   text-align: left;
   cursor: pointer;
@@ -669,7 +716,9 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s, color 0.2s;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
   background-color: var(--md-sys-color-surface-container-high);
   color: var(--md-sys-color-on-surface-variant);
 }

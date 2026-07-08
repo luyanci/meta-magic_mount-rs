@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { ICONS } from '../../lib/constants';
+import { ref } from "vue";
+import { ICONS } from "../../lib/constants";
 
 const props = defineProps<{
   values: string[];
@@ -8,25 +8,28 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:values', values: string[]): void;
+  (e: "update:values", values: string[]): void;
 }>();
 
-const inputValue = ref('');
+const inputValue = ref("");
 
 function handleAdd() {
   const value = inputValue.value.trim();
   if (value && !props.values.includes(value)) {
-    emit('update:values', [...props.values, value]);
-    inputValue.value = '';
+    emit("update:values", [...props.values, value]);
+    inputValue.value = "";
   }
 }
 
 function handleRemove(index: number) {
-  emit('update:values', props.values.filter((_, i) => i !== index));
+  emit(
+    "update:values",
+    props.values.filter((_, i) => i !== index),
+  );
 }
 
 function handleKeydown(e: KeyboardEvent) {
-  if (e.key === 'Enter') {
+  if (e.key === "Enter") {
     e.preventDefault();
     handleAdd();
   }
@@ -36,14 +39,10 @@ function handleKeydown(e: KeyboardEvent) {
 <template>
   <div class="chip-input-wrapper">
     <div v-if="values.length > 0" class="chip-set">
-      <div
-        v-for="(value, index) in values"
-        :key="index"
-        class="chip-item"
-      >
+      <div v-for="(value, index) in values" :key="index" class="chip-item">
         <span class="chip-text">{{ value }}</span>
         <button class="chip-remove" @click="handleRemove(index)">
-          <svg viewBox="0 0 24 24" width="16" height="16">
+          <svg viewBox="0 0 24 24" width="28" height="28">
             <path :d="ICONS.delete" />
           </svg>
         </button>
@@ -93,8 +92,8 @@ function handleKeydown(e: KeyboardEvent) {
 }
 
 .chip-remove {
-  width: 20px;
-  height: 20px;
+  width: 28px;
+  height: 28px;
   border: none;
   background: transparent;
   display: flex;

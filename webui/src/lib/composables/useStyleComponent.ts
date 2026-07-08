@@ -1,5 +1,5 @@
-import { computed, type ComputedRef, type Component } from 'vue';
-import { uiStore } from '../lib/stores/uiStore';
+import { computed, type ComputedRef, type Component } from "vue";
+import { uiStore } from "../lib/stores/uiStore";
 
 export function useStyleComponent(components: {
   miuix: Component;

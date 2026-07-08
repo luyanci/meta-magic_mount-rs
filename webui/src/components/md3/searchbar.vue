@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { ICONS } from '../../lib/constants';
+import { ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
+import { ICONS } from "../../lib/constants";
 
 const { t } = useI18n();
 
@@ -10,24 +10,27 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string): void;
+  (e: "update:modelValue", value: string): void;
 }>();
 
-const searchQuery = ref(props.modelValue ?? '');
+const searchQuery = ref(props.modelValue ?? "");
 
-watch(() => props.modelValue, (val) => {
-  searchQuery.value = val ?? '';
-});
+watch(
+  () => props.modelValue,
+  (val) => {
+    searchQuery.value = val ?? "";
+  },
+);
 
 function handleInput(e: Event) {
   const value = (e.target as HTMLInputElement).value;
   searchQuery.value = value;
-  emit('update:modelValue', value);
+  emit("update:modelValue", value);
 }
 
 function clearSearch() {
-  searchQuery.value = '';
-  emit('update:modelValue', '');
+  searchQuery.value = "";
+  emit("update:modelValue", "");
 }
 </script>
 
@@ -43,11 +46,7 @@ function clearSearch() {
       :value="searchQuery"
       @input="handleInput"
     />
-    <button
-      v-if="searchQuery"
-      class="search-clear-btn"
-      @click="clearSearch"
-    >
+    <button v-if="searchQuery" class="search-clear-btn" @click="clearSearch">
       <svg viewBox="0 0 24 24" width="18" height="18">
         <path :d="ICONS.close" />
       </svg>

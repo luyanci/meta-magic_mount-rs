@@ -137,7 +137,7 @@ function open_github_repo() {
         :key="contributor.id"
       >
         <MiuixBasicComponent
-          :title="contributor.name"
+          :title="contributor.name ?? contributor.login"
           :summary="getDisplayBio(contributor.bio)"
           :clickable="true"
           @click="API.openLink(contributor.html_url)"
