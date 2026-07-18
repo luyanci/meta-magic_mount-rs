@@ -67,7 +67,7 @@
 
   --m-color-outline: var(--outline, #79747e);
   --m-color-divider-line: var(--outlineVariant, #cac4d0);
-  --m-color-window-dimming: var(--scrim, #0000004d);
+  --m-color-window-dimming: rgba(0, 0, 0, 0.3);
 
   --m-color-slider-key-point: var(--outlineVariant, #cac4d0);
   --m-color-slider-key-point-foreground: var(--primary, #6750a4);
@@ -140,7 +140,7 @@
 
     --m-color-outline: var(--outline, #938f99);
     --m-color-divider-line: var(--outlineVariant, #49454f);
-    --m-color-window-dimming: var(--scrim, #00000080);
+    --m-color-window-dimming: rgba(0, 0, 0, 0.6);
 
     --m-color-slider-key-point: var(--outlineVariant, #49454f);
     --m-color-slider-key-point-foreground: var(--primary, #d0bcff);
